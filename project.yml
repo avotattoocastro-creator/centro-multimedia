@@ -1,0 +1,55 @@
+# Proyecto generado con XcodeGen (https://github.com/yonaskolb/XcodeGen).
+# GitHub Actions lo convierte en un proyecto de Xcode y compila la app automáticamente.
+name: CentroMultimedia
+options:
+  bundleIdPrefix: com.tunombre
+  deploymentTarget:
+    iOS: "16.0"
+  developmentLanguage: es
+settings:
+  base:
+    SWIFT_VERSION: "5.0"
+    MARKETING_VERSION: "1.0"
+    CURRENT_PROJECT_VERSION: "1"
+targets:
+  CentroMultimedia:
+    type: application
+    platform: iOS
+    sources:
+      - path: CentroMultimedia
+        excludes:
+          - "Info.plist"
+    scheme: {}
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.tunombre.centromultimedia
+        PRODUCT_NAME: CentroMultimedia
+        TARGETED_DEVICE_FAMILY: "1,2"
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
+        CODE_SIGN_STYLE: Automatic
+        # Rellena con tu Team ID si compilas en Xcode con tu Apple ID:
+        DEVELOPMENT_TEAM: ""
+    info:
+      path: CentroMultimedia/Info.plist
+      properties:
+        CFBundleDisplayName: Centro Multimedia
+        CFBundleDevelopmentRegion: es
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        UILaunchScreen: {}
+        UIBackgroundModes: [audio]
+        UIFileSharingEnabled: true
+        LSSupportsOpeningDocumentsInPlace: true
+        UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait
+          - UIInterfaceOrientationLandscapeLeft
+          - UIInterfaceOrientationLandscapeRight
+        UISupportedInterfaceOrientations~ipad:
+          - UIInterfaceOrientationPortrait
+          - UIInterfaceOrientationPortraitUpsideDown
+          - UIInterfaceOrientationLandscapeLeft
+          - UIInterfaceOrientationLandscapeRight
+        NSLocalNetworkUsageDescription: "Para conectar con tu servidor Jellyfin en tu red de casa."
+        NSAppTransportSecurity:
+          NSAllowsArbitraryLoads: true
