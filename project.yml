@@ -2,7 +2,7 @@
 # GitHub Actions lo convierte en un proyecto de Xcode y compila la app automáticamente.
 name: CentroMultimedia
 options:
-  bundleIdPrefix: com.avotattoocastro
+  bundleIdPrefix: com.avoperformance
   deploymentTarget:
     iOS: "16.0"
   developmentLanguage: es
@@ -22,7 +22,7 @@ targets:
     scheme: {}
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: com.avotattoocastro.centromultimedia
+        PRODUCT_BUNDLE_IDENTIFIER: com.avoperformance.centromultimedia
         PRODUCT_NAME: CentroMultimedia
         TARGETED_DEVICE_FAMILY: "1,2"
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon

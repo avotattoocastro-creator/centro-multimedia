@@ -35,13 +35,13 @@ Apple exige firmar las apps. Opciones, de más fácil a más completa:
 - **Xcode en un Mac (gratis)**: `brew install xcodegen && xcodegen generate`, abre `CentroMultimedia.xcodeproj`, elige tu Apple ID en *Signing & Capabilities* y pulsa ▶︎ con el iPhone conectado. También caduca a los 7 días.
 - **Apple Developer Program (99 €/año)**: firma de un año e instalación por TestFlight.
 
-El identificador de la app es `com.avotattoocastro.centromultimedia` (en `project.yml`).
+El identificador de la app es `com.avoperformance.centromultimedia` (en `project.yml`).
 
 ## 2b. Subirla a TestFlight (sin Mac)
 
 Requisito: estar en el **Apple Developer Program** (99 €/año). El flujo `Subir a TestFlight` compila, firma con la firma en la nube de Apple y sube la app.
 
-1. **Registra el identificador** en developer.apple.com › Certificates, IDs & Profiles › Identifiers › + › App IDs › App: Bundle ID explícito `com.avotattoocastro.centromultimedia`, sin capacidades extra.
+1. **Registra el identificador** en developer.apple.com › Certificates, IDs & Profiles › Identifiers › + › App IDs › App: Bundle ID explícito `com.avoperformance.centromultimedia`, sin capacidades extra.
 2. **Crea la app** en appstoreconnect.apple.com › Apps › + › Nueva app: plataforma iOS, nombre «Centro Multimedia» (si está cogido, añade algo), idioma Español (España), elige ese Bundle ID y como SKU `centromultimedia`.
 3. **Crea una clave API** en App Store Connect › Usuarios y acceso › Integraciones › Claves de API del equipo › +, con acceso **Admin**. Descarga el `.p8` (solo se puede una vez) y apunta el **Key ID** y el **Issuer ID**.
 4. **Busca tu Team ID** en developer.apple.com › Account › Membership details.
