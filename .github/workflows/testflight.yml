@@ -1,0 +1,85 @@
+name: Subir a TestFlight
+
+# Se lanza a mano: Acciones › Subir a TestFlight › Run workflow.
+# Necesita 4 secretos del repositorio (Settings › Secrets and variables › Actions):
+#   APPLE_TEAM_ID   ID de equipo de 10 caracteres (developer.apple.com › Membership)
+#   ASC_KEY_ID      ID de la clave API de App Store Connect
+#   ASC_ISSUER_ID   Issuer ID de las claves API
+#   ASC_KEY_P8      Contenido completo del archivo AuthKey_XXXX.p8
+on:
+  workflow_dispatch:
+
+jobs:
+  testflight:
+    runs-on: macos-15
+    timeout-minutes: 60
+    env:
+      KEY_PATH: ${{ github.workspace }}/AuthKey.p8
+    steps:
+      - name: Descargar el código
+        uses: actions/checkout@v4
+
+      - name: Comprobar secretos
+        env:
+          TEAM: ${{ secrets.APPLE_TEAM_ID }}
+          KID: ${{ secrets.ASC_KEY_ID }}
+          ISS: ${{ secrets.ASC_ISSUER_ID }}
+          P8: ${{ secrets.ASC_KEY_P8 }}
+        run: |
+          for v in TEAM KID ISS P8; do
+            if [ -z "${!v}" ]; then echo "::error::Falta un secreto ($v). Revisa la guía del README."; exit 1; fi
+          done
+          printf '%s\n' "$P8" > "$KEY_PATH"
+
+      - name: Instalar XcodeGen y generar el proyecto
+        run: |
+          brew install xcodegen
+          xcodegen generate
+
+      - name: Archivar y firmar (firma en la nube de Apple)
+        run: |
+          set -o pipefail
+          xcodebuild archive \
+            -project CentroMultimedia.xcodeproj \
+            -scheme CentroMultimedia \
+            -configuration Release \
+            -destination 'generic/platform=iOS' \
+            -archivePath build/CentroMultimedia.xcarchive \
+            -allowProvisioningUpdates \
+            -authenticationKeyPath "$KEY_PATH" \
+            -authenticationKeyID "${{ secrets.ASC_KEY_ID }}" \
+            -authenticationKeyIssuerID "${{ secrets.ASC_ISSUER_ID }}" \
+            DEVELOPMENT_TEAM="${{ secrets.APPLE_TEAM_ID }}" \
+            CODE_SIGN_STYLE=Automatic \
+            CURRENT_PROJECT_VERSION="${{ github.run_number }}" \
+            | tee archive.log | grep -E "error:|ARCHIVE" || true
+          test -d build/CentroMultimedia.xcarchive || { grep -n "error:" archive.log | head -40; exit 1; }
+
+      - name: Exportar y subir a App Store Connect
+        run: |
+          cat > ExportOptions.plist <<EOF
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0"><dict>
+            <key>method</key><string>app-store-connect</string>
+            <key>destination</key><string>upload</string>
+            <key>teamID</key><string>${{ secrets.APPLE_TEAM_ID }}</string>
+            <key>signingStyle</key><string>automatic</string>
+            <key>manageAppVersionAndBuildNumber</key><false/>
+            <key>uploadSymbols</key><true/>
+          </dict></plist>
+          EOF
+          set -o pipefail
+          xcodebuild -exportArchive \
+            -archivePath build/CentroMultimedia.xcarchive \
+            -exportOptionsPlist ExportOptions.plist \
+            -exportPath build/export \
+            -allowProvisioningUpdates \
+            -authenticationKeyPath "$KEY_PATH" \
+            -authenticationKeyID "${{ secrets.ASC_KEY_ID }}" \
+            -authenticationKeyIssuerID "${{ secrets.ASC_ISSUER_ID }}" \
+            | tee export.log | tail -20
+
+      - name: Borrar la clave
+        if: always()
+        run: rm -f "$KEY_PATH"
