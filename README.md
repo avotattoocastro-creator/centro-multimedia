@@ -35,32 +35,16 @@ Apple exige firmar las apps. Opciones, de más fácil a más completa:
 - **Xcode en un Mac (gratis)**: `brew install xcodegen && xcodegen generate`, abre `CentroMultimedia.xcodeproj`, elige tu Apple ID en *Signing & Capabilities* y pulsa ▶︎ con el iPhone conectado. También caduca a los 7 días.
 - **Apple Developer Program (99 €/año)**: firma de un año e instalación por TestFlight.
 
-El identificador de la app es `com.avoperformance.centromultimedia` (en `project.yml`).
+El identificador de la app es `org.avoperformance.centromultimedia` (en `project.yml`).
 
-## 2a. TestFlight con Codemagic (recomendado: igual que AVO Performance)
+## 2a. TestFlight (mismo sistema que la app iPad de AVO)
 
-`codemagic.yaml` usa la integración de App Store Connect **Codemagic** y el certificado de distribución que ya tiene el equipo AVO.
+El flujo **Subir a TestFlight** funciona igual que `build-avo-ipad.yml` del repositorio `apk_android_avo`.
 
-1. developer.apple.com › Identifiers › + › App ID: `com.avoperformance.centromultimedia`.
+1. developer.apple.com › Identifiers › + › App ID: `org.avoperformance.centromultimedia`.
 2. App Store Connect › Apps › + › Nueva app con ese Bundle ID (SKU `centromultimedia`).
-3. Codemagic › Add application › GitHub › `centro-multimedia` › configuración «codemagic.yaml».
-4. Start new build › rama `main` › workflow «Centro Multimedia → TestFlight».
-
-## 2b. Alternativa: TestFlight solo con GitHub Actions
-
-Requisito: estar en el **Apple Developer Program** (99 €/año). El flujo `Subir a TestFlight` compila, firma con la firma en la nube de Apple y sube la app.
-
-1. **Registra el identificador** en developer.apple.com › Certificates, IDs & Profiles › Identifiers › + › App IDs › App: Bundle ID explícito `com.avoperformance.centromultimedia`, sin capacidades extra.
-2. **Crea la app** en appstoreconnect.apple.com › Apps › + › Nueva app: plataforma iOS, nombre «Centro Multimedia» (si está cogido, añade algo), idioma Español (España), elige ese Bundle ID y como SKU `centromultimedia`.
-3. **Crea una clave API** en App Store Connect › Usuarios y acceso › Integraciones › Claves de API del equipo › +, con acceso **Admin**. Descarga el `.p8` (solo se puede una vez) y apunta el **Key ID** y el **Issuer ID**.
-4. **Busca tu Team ID** en developer.apple.com › Account › Membership details.
-5. **Añade 4 secretos** en GitHub › repositorio › Settings › Secrets and variables › Actions › New repository secret:
-   - `APPLE_TEAM_ID`, `ASC_KEY_ID`, `ASC_ISSUER_ID`
-   - `ASC_KEY_P8`: abre el `.p8` con un editor de texto y pega todo, incluidas las líneas BEGIN/END.
-6. **Lánzalo**: Actions › Subir a TestFlight › Run workflow.
-7. A los 10–30 minutos la versión aparece en App Store Connect › TestFlight. Añádete en **Pruebas internas** e instálala con la app TestFlight del iPhone o iPad.
-
-Cada vez que lo lances, el número de compilación sube solo.
+3. Settings › Secrets and variables › Actions de **este** repositorio: crea los mismos secretos que en `apk_android_avo` (`APPLE_TEAM_ID`, `ASC_KEY_ID`, `ASC_ISSUER_ID`, `ASC_KEY_P8`). GitHub no deja copiar secretos entre repositorios: hay que pegarlos otra vez.
+4. Actions › Subir a TestFlight › Run workflow. Aparece en TestFlight cuando Apple la procesa.
 
 ## 3. Usarla
 
