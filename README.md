@@ -37,7 +37,16 @@ Apple exige firmar las apps. Opciones, de más fácil a más completa:
 
 El identificador de la app es `com.avoperformance.centromultimedia` (en `project.yml`).
 
-## 2b. Subirla a TestFlight (sin Mac)
+## 2a. TestFlight con Codemagic (recomendado: igual que AVO Performance)
+
+`codemagic.yaml` usa la integración de App Store Connect **Codemagic** y el certificado de distribución que ya tiene el equipo AVO.
+
+1. developer.apple.com › Identifiers › + › App ID: `com.avoperformance.centromultimedia`.
+2. App Store Connect › Apps › + › Nueva app con ese Bundle ID (SKU `centromultimedia`).
+3. Codemagic › Add application › GitHub › `centro-multimedia` › configuración «codemagic.yaml».
+4. Start new build › rama `main` › workflow «Centro Multimedia → TestFlight».
+
+## 2b. Alternativa: TestFlight solo con GitHub Actions
 
 Requisito: estar en el **Apple Developer Program** (99 €/año). El flujo `Subir a TestFlight` compila, firma con la firma en la nube de Apple y sube la app.
 
